@@ -1,0 +1,17 @@
+[package]
+authors = ["Mikhail Pogretskiy <mikhail.pogretskiy@gmail.com>"]
+edition = "2018"
+name = "and-conquer"
+version = "0.1.0"
+
+
+[dependencies]
+num_cpus = "1.13.0"
+spmc = "0.3.0"
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "divide_work"
+harness = false
