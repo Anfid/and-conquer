@@ -4,7 +4,7 @@ use criterion::{black_box, criterion_group, criterion_main, BatchSize, Criterion
 fn bench_small_equal_work(c: &mut Criterion) {
     let input: Vec<i32> = (1..1000).collect();
     let mut group = c.benchmark_group("small_equal_work");
-    group.bench_with_input("deq mtx", &input, |b, i| {
+    group.bench_with_input("vec mtx", &input, |b, i| {
         b.iter_batched(
             || i.clone(),
             |i| divide_work(black_box(i), black_box(|x| x * 2)),
@@ -32,7 +32,7 @@ fn fibonacci(n: u64) -> u64 {
 fn bench_unequal_work(c: &mut Criterion) {
     let input: Vec<u64> = (0..30).collect();
     let mut group = c.benchmark_group("unequal_work");
-    group.bench_with_input("deq mtx", &input, |b, i| {
+    group.bench_with_input("vec mtx", &input, |b, i| {
         b.iter_batched(
             || i.clone(),
             |i| divide_work(black_box(i), black_box(fibonacci)),

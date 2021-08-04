@@ -64,13 +64,7 @@ where
         let length = input.len();
 
         let workers = {
-            let mut queue = std::collections::VecDeque::with_capacity(length);
-
-            for indexed in input.into_iter().enumerate() {
-                queue.push_back(indexed);
-            }
-
-            let queue = Arc::new(Mutex::new(queue));
+            let queue = Arc::new(Mutex::new(input));
 
             let mut workers = Vec::with_capacity(cores);
             for _ in 0..cores {
@@ -80,8 +74,14 @@ where
                 workers.push(std::thread::spawn(move || {
                     let mut res = Vec::new();
                     loop {
-                        let value = { queue.lock().unwrap().pop_front() };
-                        if let Some((idx, val)) = value {
+                        let value = {
+                            let mut q = queue.lock().unwrap();
+                            let val = q.pop();
+                            // At this point len already has element index, because it was decrememted with pop.
+                            // `idx` will be unused if `pop` returns `None`
+                            (q.len(), val)
+                        };
+                        if let (idx, Some(val)) = value {
                             // SAFETY: `idx` must remain within `length` to prevent writing data out of array bounds
                             res.push((idx, f(val)));
                         } else {
